@@ -127,11 +127,73 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
- 
-# Environments 
-uenv/ 
-# Local workspace configs 
-.vscode/ 
- 
-# Secrets files 
-secrets.txt 
+
+# Environments
+uenv/
+# Local workspace configs
+.vscode/
+
+# Secrets files
+secrets.txt
+
+# Environments
+uenv/
+# Local workspace configs
+.vscode/
+
+# Secrets files
+secrets.txt
+
+# Environments
+uenv/
+# Local workspace configs
+.vscode/
+
+# Secrets files
+secrets.txt
+
+# Environments
+uenv/
+# Local workspace configs
+.vscode/
+
+# Secrets files
+secrets.txt
+
+# Environments
+uenv/
+# Local workspace configs
+.vscode/
+
+# Secrets files
+secrets.txt
+
+# Environments
+uenv/
+# Local workspace configs
+.vscode/
+
+# Secrets files
+secrets.txt
+
+# Environments
+uenv/
+# Local workspace configs
+.vscode/
+
+# Secrets files
+secrets.txt
+
+# Environments
+# Environments
+uenv/
+uenv/
+# Local workspace configs
+# Local workspace configs
+.vscode/
+.vscode/
+
+# Secrets files
+# Secrets files
+secrets.txt
+secrets.txt
