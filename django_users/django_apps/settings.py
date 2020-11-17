@@ -18,7 +18,7 @@ import dotenv
 from django_apps import utils
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,17 +26,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Retrieve the environment variables
 try:
-    path_env = os.path.join(BASE_DIR, ".env")
+    path_env = os.path.join(BASE_DIR.parent, ".env")
     dotenv.read_dotenv(path_env)
 except EnvironmentError:
     print("Couldn't retrieve the environment variables")
 
 try:
-    path_env = os.path.join(BASE_DIR, ".env")
+    path_env = os.path.join(BASE_DIR.parent, ".env")
     dotenv.read_dotenv(path_env)
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 except KeyError:
-    path_env = os.path.join(BASE_DIR, ".env")
+    path_env = os.path.join(BASE_DIR.parent, ".env")
     utils.generate_secret_key(path_env)
     dotenv.read_dotenv(path_env)
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
@@ -55,7 +55,7 @@ try:
     DBHOST = os.environ["DBHOST"]
     DBPORT = os.environ["DBPORT"]
 except KeyError:
-    path_env = os.path.join(BASE_DIR, ".env")
+    path_env = os.path.join(BASE_DIR.parent, ".env")
     dotenv.read_dotenv(path_env)
     DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
     DJANGO_HOST_NAME = os.environ["DJANGO_HOST_NAME"]
@@ -184,3 +184,5 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
+
+LOGIN_REDIRECT_URL = "django_users:dashboard"
