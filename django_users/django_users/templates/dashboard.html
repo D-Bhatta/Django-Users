@@ -5,7 +5,16 @@
     <vstack spacing="m">
       <vstack spacing="s" stretch="" align-x="center" align-y="center">
         <h1>Django-Users</h1>
-        <h2>Hello {{user.username|default:"Guest"}}!</h2>
+        <hstack spacing="s">
+          <h2>Hello {{user.username|default:"Guest"}}!</h2>
+          <span>
+            {% if user.is_authenticated %}
+            <a href="{% url 'django_users:logout' %}">Logout</a>
+            {% else %}
+            <a href="{% url 'django_users:login' %}">Login</a>
+            {% endif %}
+          </span>
+        </hstack>
       </vstack>
       <spacer></spacer>
       <vstack spacing="l">
