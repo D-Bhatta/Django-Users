@@ -1,4 +1,4 @@
-""" Tests for 'project_name' app """
+""" Tests for 'django_users' app """
 import pytest
 
 # from django.urls import reverse
