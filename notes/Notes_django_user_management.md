@@ -15,6 +15,7 @@ Notes and code about project_name
   - [Create a Dashboard View](#create-a-dashboard-view)
   - [Work With Django User Management](#work-with-django-user-management)
     - [Create a login page](#create-a-login-page)
+    - [Create a Logout Page](#create-a-logout-page)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -201,6 +202,32 @@ urlpatterns = [
 ```python
 LOGIN_REDIRECT_URL = "django_users:dashboard"
 ```
+
+### Create a Logout Page
+
+- Users can log in, but they should also be able to log out. This process is more straightforward because there’s no form—they just need to click a link. After that, Django will redirect users to `accounts/logout` and will try to use a template called `registration/logged_out.html`.
+- Redirect them to the dashboard
+
+```python
+LOGOUT_REDIRECT_URL = "django_users:dashboard"
+```
+
+- Add logout and login links to dashboard
+
+```html
+<hstack spacing="s">
+        <h2>Hello {{user.username|default:"Guest"}}!</h2>
+        <span>
+            {% if user.is_authenticated %}
+            <a href="{% url 'django_users:logout' %}">Logout</a>
+            {% else %}
+            <a href="{% url 'django_users:login' %}">Login</a>
+            {% endif %}
+        </span>
+        </hstack>
+```
+
+
 
 ## Additional Information
 
