@@ -49,11 +49,21 @@ DEBUG = True
 try:
     DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
     DJANGO_HOST_NAME = os.environ["DJANGO_HOST_NAME"]
+    DBNAME = os.environ["DBNAME"]
+    DBUSER = os.environ["DBUSER"]
+    DBPASSWORD = os.environ["DBPASSWORD"]
+    DBHOST = os.environ["DBHOST"]
+    DBPORT = os.environ["DBPORT"]
 except KeyError:
     path_env = os.path.join(BASE_DIR, ".env")
     dotenv.read_dotenv(path_env)
     DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
     DJANGO_HOST_NAME = os.environ["DJANGO_HOST_NAME"]
+    DBNAME = os.environ["DBNAME"]
+    DBUSER = os.environ["DBUSER"]
+    DBPASSWORD = os.environ["DBPASSWORD"]
+    DBHOST = os.environ["DBHOST"]
+    DBPORT = os.environ["DBPORT"]
 
 if DJANGO_ENVIRONMENT == "PRODUCTION":
     ALLOWED_HOSTS = [
@@ -124,11 +134,11 @@ WSGI_APPLICATION = "django_apps.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.environ["DBNAME"],
-        "USER": os.environ["DBUSER"],
-        "PASSWORD": os.environ["DBPASSWORD"],
-        "HOST": os.environ["DBHOST"],
-        "PORT": os.environ["DBPORT"],
+        "NAME": DBNAME,
+        "USER": DBUSER,
+        "PASSWORD": DBPASSWORD,
+        "HOST": DBHOST,
+        "PORT": DBPORT,
     }
 }
 
