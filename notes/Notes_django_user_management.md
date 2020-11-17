@@ -14,6 +14,7 @@ Notes and code about project_name
     - [Create a superuser](#create-a-superuser)
   - [Create a Dashboard View](#create-a-dashboard-view)
   - [Work With Django User Management](#work-with-django-user-management)
+    - [Create a login page](#create-a-login-page)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -148,7 +149,58 @@ urlpatterns = [
 
 ## Work With Django User Management
 
+- Django has a lot of user management–related resources that’ll take care of almost everything, including login, logout, password change, and password reset. Templates aren’t part of those resources, though. You have to create them on your own.
 
+- Add the URLs provided by the Django authentication system into the app urls
+
+```python
+urlpatterns = [
+    path("dashboard/", views.dashboard, name="dashboard"),
+    path("accounts/", include("django.contrib.auth.urls")),
+]
+```
+
+### Create a login page
+
+- For the login page, Django will try to use a template called `registration/login.html`
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<body>
+  <main>
+    <vstack spacing="m">
+      <vstack spacing="s" stretch="" align-x="center" align-y="center">
+        <h1>Django-Users: Login</h1>
+        <h2>Hello {{user.username|default:"Guest"}}!</h2>
+      </vstack>
+      <spacer></spacer>
+      <vstack spacing="l">
+        <vstack spacing="xs">
+          <aside class="pa-s">
+            <vstack>
+              <form method="POST">
+                {% csrf_token %} {{form.as_p}}
+                <input type="submit" value="login" />
+              </form>
+              <a href="{% url 'django_users:dashboard' %}">Back to dashboard</a>
+            </vstack>
+          </aside>
+        </vstack>
+      </vstack>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
+
+- Django will automatically create the view and urls necessary for the template.
+- Redirect to dashboard in settings
+
+```python
+LOGIN_REDIRECT_URL = "django_users:dashboard"
+```
 
 ## Additional Information
 
