@@ -13,6 +13,7 @@ Notes and code about project_name
     - [Disable password validators in settings. Just comment them out, leaving an empty list](#disable-password-validators-in-settings-just-comment-them-out-leaving-an-empty-list)
     - [Create a superuser](#create-a-superuser)
   - [Create a Dashboard View](#create-a-dashboard-view)
+  - [Work With Django User Management](#work-with-django-user-management)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -81,7 +82,73 @@ python manage.py createsuperuser
 ## Create a Dashboard View
 
 - Most user management systems have some sort of main page, usually known as a dashboard.
--
+- Create a base template
+- Create a `dashboard.html` file
+- Display the current user's username and set a default with `{{ user.username | default:"Guest" }}`
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<body>
+  <main>
+    <vstack spacing="m">
+      <vstack spacing="s" stretch="" align-x="center" align-y="center">
+        <h1>Django-Users</h1>
+        <h2>Hello {{ user.username | default:"Guest" }}!</h2>
+      </vstack>
+      <spacer></spacer>
+      <vstack spacing="l">
+        <vstack spacing="xs">
+          <aside class="pa-s">
+            <vstack>
+            </vstack>
+          </aside>
+        </vstack>
+      </vstack>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+```
+
+- If the user isn’t logged in, then Django will still set the user variable using an `AnonymousUser` object. An anonymous user always has an empty username, so the dashboard will show `Hello, Guest!`
+- Create a view to render it
+
+```python
+from django.shortcuts import render
+
+# Create your views here.
+
+
+def dashboard(request):
+    return render(request, "dashboard.html", {})
+```
+
+- Set an url to access the view
+
+```python
+from django.urls import path
+
+from django_users import views
+
+app_name = "django_users"
+
+urlpatterns = [path("dashboard/", views.dashboard, name="dashboard")]
+```
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("", include("django_users.urls", namespace="django_users")),
+]
+```
+
+## Work With Django User Management
+
+
 
 ## Additional Information
 
