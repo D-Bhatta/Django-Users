@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+from socket import gethostname
+
+import dotenv
+from django_apps import utils
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,13 +24,53 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "qn(n@*jut)w8++g5hx%*stvju=qci=q82qj*xp5u_@kype8xx&"
+# Retrieve the environment variables
+try:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
+except EnvironmentError:
+    print("Couldn't retrieve the environment variables")
+
+try:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
+    SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+except KeyError:
+    path_env = os.path.join(BASE_DIR, ".env")
+    utils.generate_secret_key(path_env)
+    dotenv.read_dotenv(path_env)
+    SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Find out what environment we are running in
+# Get the hostname
+try:
+    DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
+    DJANGO_HOST_NAME = os.environ["DJANGO_HOST_NAME"]
+except KeyError:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
+    DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
+    DJANGO_HOST_NAME = os.environ["DJANGO_HOST_NAME"]
+
+if DJANGO_ENVIRONMENT == "PRODUCTION":
+    ALLOWED_HOSTS = [
+        DJANGO_HOST_NAME,
+    ]
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "django_apps/static/django_apps"),
+        os.path.join(BASE_DIR, "django_users/static/django_users"),
+    ]
+elif DJANGO_ENVIRONMENT == "DEVELOPMENT":
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "django_apps\\static\\django_apps"),
+        os.path.join(BASE_DIR, "django_users\\static\\django_users"),
+    ]
+    ALLOWED_HOSTS = []
+else:
+    pass
 
 
 # Application definition
@@ -37,6 +82,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_users",
 ]
 
 MIDDLEWARE = [
@@ -54,7 +100,9 @@ ROOT_URLCONF = "django_apps.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            "django_apps/templates/",
+        ],  ## Add base templates directory
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -118,3 +166,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+MEDIA_URL = "/media/"
