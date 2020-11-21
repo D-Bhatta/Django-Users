@@ -56,10 +56,12 @@ try:
     DBPORT = os.environ["DBPORT"]
     EMAIL_HOST = os.environ["EMAIL_HOST"]
     EMAIL_PORT = os.environ["EMAIL_PORT"]
+    EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
+    EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
     EMAIL_USE_TLS = os.environ["EMAIL_USE_TLS"]
     DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
     EMAIL_BACKEND = os.environ["EMAIL_BACKEND"]
-    SERVER_EMAIL = os.environ["SERVER_EMAIL"]
+    # SERVER_EMAIL = os.environ["SERVER_EMAIL"]
 except KeyError:
     path_env = os.path.join(BASE_DIR.parent, ".env")
     dotenv.read_dotenv(path_env)
@@ -72,10 +74,12 @@ except KeyError:
     DBPORT = os.environ["DBPORT"]
     EMAIL_HOST = os.environ["EMAIL_HOST"]
     EMAIL_PORT = os.environ["EMAIL_PORT"]
+    EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
+    EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
     EMAIL_USE_TLS = os.environ["EMAIL_USE_TLS"]
     DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
     EMAIL_BACKEND = os.environ["EMAIL_BACKEND"]
-    SERVER_EMAIL = os.environ["SERVER_EMAIL"]
+    # SERVER_EMAIL = os.environ["SERVER_EMAIL"]
 
 if EMAIL_USE_TLS == "True":
     EMAIL_USE_TLS = True
