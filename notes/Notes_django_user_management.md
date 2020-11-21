@@ -19,6 +19,8 @@ Notes and code about project_name
     - [Change Passwords](#change-passwords)
     - [Send Password Reset Links](#send-password-reset-links)
       - [Change Email Templates](#change-email-templates)
+  - [Register New Users](#register-new-users)
+  - [Send Emails to the Outside World: Mail gun](#send-emails-to-the-outside-world-mail-gun)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -420,6 +422,114 @@ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
 ```txt
 Password reset for Django-Users
 ```
+
+## Register New Users
+
+- Django doesn’t provide user registration out of the box.
+- `UserCreationForm`: It contains all the necessary fields to create a new user
+- However, it doesn’t include an email field.
+- Add the email field by inheriting the `UserCreationForm` into a new form
+- `CustomUserCreationForm` extends Django’s `UserCreationForm`. The inner class `Meta` keeps additional information about the form and in this case extends `UserCreationForm.Meta`, so almost everything from Django’s form will be reused.
+- The key difference is the `fields` attribute, which determines the fields that’ll be included in the form. Your custom form will use all the fields from `UserCreationForm` and will add the `email` field.
+
+```python
+from django.contrib.auth.forms import UserCreationForm
+
+
+class NewUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        fields = UserCreationForm.Meta.fields + ("email",)
+```
+
+- Create a new view called `register`
+
+```python
+def register(request):
+    if request.method == "GET":
+        return render(request, "register.html", {"form": NewUserCreationForm})
+    elif request.method == "POST":
+        form = NewUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect(reverse("dashboard"))
+```
+
+- Add `register` url to `urls.py`
+
+```python
+path("register/", views.register, name="register"),
+```
+
+- Create a template called `register.html`
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<body>
+  <main>
+    <vstack spacing="m">
+      <vstack spacing="s" stretch="" align-x="center" align-y="center">
+        <h1>Django-Users: Register</h1>
+      </vstack>
+      <spacer></spacer>
+      <vstack spacing="l">
+        <vstack spacing="xs">
+          <aside class="pa-s">
+            <vstack>
+              <form method="POST">
+                {% csrf_token %} {{form.as_p}}
+                <input type="submit" value="register" />
+              </form>
+              <a href="{% url 'login' %}">Login</a>
+            </vstack>
+          </aside>
+        </vstack>
+      </vstack>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
+
+- Add registration url to `login.html` template
+
+```html
+<vstack>
+    <form method="POST">
+    {% csrf_token %} {{form.as_p}}
+    <input type="submit" value="login" />
+    </form>
+    <a href="{% url 'dashboard' %}">Back to dashboard</a>
+    <a href="{% url 'password_reset' %}">Back to dashboard</a>
+    <a href="{% url 'register' %}">Register</a>
+</vstack>
+```
+
+## Send Emails to the Outside World: Mail gun
+
+- Create a mailgun account
+- Go to Dashboard -> domain -> select SMTP
+- Copy credentials that appear
+
+```env
+EMAIL_HOST = smtp.mailgun.org
+
+EMAIL_HOST_USER = Username
+
+EMAIL_HOST_PASSWORD = password
+
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True
+
+EMAIL_BACKEND = django.core.mail.backends.smtp.EmailBackend
+
+DEFAULT_FROM_EMAIL = Username
+```
+
+- Now, email should be sent from mailgun everytime.
 
 ## Additional Information
 
