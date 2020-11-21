@@ -16,6 +16,7 @@ Notes and code about project_name
   - [Work With Django User Management](#work-with-django-user-management)
     - [Create a login page](#create-a-login-page)
     - [Create a Logout Page](#create-a-logout-page)
+    - [Change Passwords](#change-passwords)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -126,14 +127,13 @@ def dashboard(request):
     return render(request, "dashboard.html", {})
 ```
 
-- Set an url to access the view
+- Set an url to access the view.
+- Do not add a namespacefor this app.
 
 ```python
 from django.urls import path
 
 from django_users import views
-
-app_name = "django_users"
 
 urlpatterns = [path("dashboard/", views.dashboard, name="dashboard")]
 ```
@@ -142,10 +142,7 @@ urlpatterns = [path("dashboard/", views.dashboard, name="dashboard")]
 from django.contrib import admin
 from django.urls import path, include
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("django_users.urls", namespace="django_users")),
-]
+urlpatterns = [path("admin/", admin.site.urls), path("", include("django_users.urls"))]
 ```
 
 ## Work With Django User Management
@@ -158,6 +155,22 @@ urlpatterns = [
 urlpatterns = [
     path("dashboard/", views.dashboard, name="dashboard"),
     path("accounts/", include("django.contrib.auth.urls")),
+]
+```
+
+- Move the app to the top of the installed apps list
+
+```python
+# Application definition
+
+INSTALLED_APPS = [
+    "django_users",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 ]
 ```
 
@@ -184,7 +197,7 @@ urlpatterns = [
                 {% csrf_token %} {{form.as_p}}
                 <input type="submit" value="login" />
               </form>
-              <a href="{% url 'django_users:dashboard' %}">Back to dashboard</a>
+              <a href="{% url 'dashboard' %}">Back to dashboard</a>
             </vstack>
           </aside>
         </vstack>
@@ -200,7 +213,7 @@ urlpatterns = [
 - Redirect to dashboard in settings
 
 ```python
-LOGIN_REDIRECT_URL = "django_users:dashboard"
+LOGIN_REDIRECT_URL = "dashboard"
 ```
 
 ### Create a Logout Page
@@ -209,7 +222,7 @@ LOGIN_REDIRECT_URL = "django_users:dashboard"
 - Redirect them to the dashboard
 
 ```python
-LOGOUT_REDIRECT_URL = "django_users:dashboard"
+LOGOUT_REDIRECT_URL = "dashboard"
 ```
 
 - Add logout and login links to dashboard
@@ -219,15 +232,82 @@ LOGOUT_REDIRECT_URL = "django_users:dashboard"
         <h2>Hello {{user.username|default:"Guest"}}!</h2>
         <span>
             {% if user.is_authenticated %}
-            <a href="{% url 'django_users:logout' %}">Logout</a>
+            <a href="{% url 'logout' %}">Logout</a>
             {% else %}
-            <a href="{% url 'django_users:login' %}">Login</a>
+            <a href="{% url 'login' %}">Login</a>
             {% endif %}
         </span>
         </hstack>
 ```
 
+### Change Passwords
 
+- Django needs two templates to make this work
+
+1. `registration/password_change_form.html` to display the password change form
+2. `registration/password_change_done.html` to show a confirmation that the password was successfully changed
+
+- Create `registration/password_change_form.html`
+
+```html
+
+```
+
+- This template looks almost the same as the login template you created earlier. But this time, Django will put a password change form here, not a login form, so the browser will display it differently.
+
+- Create `registration/password_change_done.html`:
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<body>
+  <main>
+    <vstack spacing="m">
+      <vstack spacing="s" stretch="" align-x="center" align-y="center">
+        <h1>Django-Users: Password has been successfully changed</h1>
+        <h2>Hello {{user.username|default:"Guest"}}!</h2>
+      </vstack>
+      <spacer></spacer>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
+
+- This will reassure users that the password change was successful and let them go back to the dashboard.
+- Add a password change link to the dashboard
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<body>
+  <main>
+    <vstack spacing="m">
+      <vstack spacing="s" stretch="" align-x="center" align-y="center">
+        <h1>Django-Users: Change Password</h1>
+        <h2>Hello {{user.username|default:"Guest"}}!</h2>
+      </vstack>
+      <spacer></spacer>
+      <vstack spacing="l">
+        <vstack spacing="xs">
+          <aside class="pa-s">
+            <vstack>
+              <form method="POST">
+                {% csrf_token %} {{form.as_p}}
+                <input type="submit" value="change" />
+              </form>
+              <a href="{% url 'dashboard' %}">Back to dashboard</a>
+            </vstack>
+          </aside>
+        </vstack>
+      </vstack>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
 
 ## Additional Information
 
