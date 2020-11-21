@@ -54,6 +54,12 @@ try:
     DBPASSWORD = os.environ["DBPASSWORD"]
     DBHOST = os.environ["DBHOST"]
     DBPORT = os.environ["DBPORT"]
+    EMAIL_HOST = os.environ["EMAIL_HOST"]
+    EMAIL_PORT = os.environ["EMAIL_PORT"]
+    EMAIL_USE_TLS = os.environ["EMAIL_USE_TLS"]
+    DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
+    EMAIL_BACKEND = os.environ["EMAIL_BACKEND"]
+    SERVER_EMAIL = os.environ["SERVER_EMAIL"]
 except KeyError:
     path_env = os.path.join(BASE_DIR.parent, ".env")
     dotenv.read_dotenv(path_env)
@@ -64,6 +70,17 @@ except KeyError:
     DBPASSWORD = os.environ["DBPASSWORD"]
     DBHOST = os.environ["DBHOST"]
     DBPORT = os.environ["DBPORT"]
+    EMAIL_HOST = os.environ["EMAIL_HOST"]
+    EMAIL_PORT = os.environ["EMAIL_PORT"]
+    EMAIL_USE_TLS = os.environ["EMAIL_USE_TLS"]
+    DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
+    EMAIL_BACKEND = os.environ["EMAIL_BACKEND"]
+    SERVER_EMAIL = os.environ["SERVER_EMAIL"]
+
+if EMAIL_USE_TLS == "True":
+    EMAIL_USE_TLS = True
+if EMAIL_USE_TLS == "False":
+    EMAIL_USE_TLS = False
 
 if DJANGO_ENVIRONMENT == "PRODUCTION":
     ALLOWED_HOSTS = [
