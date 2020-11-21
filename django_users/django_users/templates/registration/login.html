@@ -16,7 +16,7 @@
                 {% csrf_token %} {{form.as_p}}
                 <input type="submit" value="login" />
               </form>
-              <a href="{% url 'django_users:dashboard' %}">Back to dashboard</a>
+              <a href="{% url 'dashboard' %}">Back to dashboard</a>
             </vstack>
           </aside>
         </vstack>

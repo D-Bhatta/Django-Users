@@ -185,6 +185,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
 
-LOGIN_REDIRECT_URL = "django_users:dashboard"
+LOGIN_REDIRECT_URL = "dashboard"
 
-LOGOUT_REDIRECT_URL = "django_users:dashboard"
+LOGOUT_REDIRECT_URL = "dashboard"
