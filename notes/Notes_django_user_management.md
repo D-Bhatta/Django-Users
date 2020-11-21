@@ -18,6 +18,7 @@ Notes and code about project_name
     - [Create a Logout Page](#create-a-logout-page)
     - [Change Passwords](#change-passwords)
     - [Send Password Reset Links](#send-password-reset-links)
+      - [Change Email Templates](#change-email-templates)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -404,6 +405,21 @@ python -m smtpd -d -n -c DebuggingServer "host":"port_number"
 ```
 
 - The email should print to the terminal from the `smtpd`/`aiosmtpd` server
+
+#### Change Email Templates
+
+- `registration/password_reset_email.html` determines the body of the email
+- `registration/password_reset_subject.txt` determines the subject of the email
+
+```html
+Password reset for email {{ email }}. Follow the link below: {{ protocol}}://{{
+domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+```
+
+```txt
+Password reset for Django-Users
+```
 
 ## Additional Information
 
