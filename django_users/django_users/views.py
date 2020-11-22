@@ -1,5 +1,5 @@
 from django.contrib.auth import login
-from django.shortcuts import redirect, render
+from django.shortcuts import Http404, redirect, render
 from django.urls import reverse
 
 from django_users.forms import NewUserCreationForm
@@ -17,6 +17,10 @@ def register(request):
     elif request.method == "POST":
         form = NewUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.backend = "django.contrib.auth.backends.ModelBackend"
+            user.save()
             login(request, user)
             return redirect(reverse("dashboard"))
+        else:
+            return Http404("Invalid Form")
