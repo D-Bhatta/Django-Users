@@ -51,7 +51,8 @@ Notes about Django User Management.
 
     ```
 
-5. Push to TravisCI
+5. There should be no space between the var name and the = and the value
+6. Push to TravisCI
 
 ## Django User Management
 
