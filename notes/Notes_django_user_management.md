@@ -21,9 +21,9 @@ Notes and code about project_name
       - [Change Email Templates](#change-email-templates)
   - [Register New Users](#register-new-users)
   - [Send Emails to the Outside World: Mail gun](#send-emails-to-the-outside-world-mail-gun)
-  - [Additional Information](#additional-information)
-    - [Screenshots](#screenshots)
-    - [Links](#links)
+  - [Log in With GitHub](#log-in-with-github)
+    - [Select Authentication backend](#select-authentication-backend)
+  - [Gmail SMTP](#gmail-smtp)
   - [Notes template](#notes-template)
 
 ## Notes
@@ -641,10 +641,30 @@ def register(request):
 - This will set the backend to use when using the app's registration process
 - Return a `HTTP  404` error if form is invalid
 
+## Gmail SMTP
+
+- Create an app password for the account
+- Set the following settings
+
+```env
+EMAIL_HOST = smtp.gmail.com
+
+EMAIL_HOST_USER = your_email@gmail.com
+
+EMAIL_HOST_PASSWORD = generated_app_password
+
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True
+
+EMAIL_BACKEND = django.core.mail.backends.smtp.EmailBackend
+
+DEFAULT_FROM_EMAIL = your_email@gmail.com
+```
+
 ## Notes template
 
 ```python
-
 ```
 
 ```html
