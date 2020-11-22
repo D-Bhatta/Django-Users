@@ -18,7 +18,7 @@ import dotenv
 from django_apps import utils
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,17 +26,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Retrieve the environment variables
 try:
-    path_env = os.path.join(BASE_DIR, ".env")
+    path_env = os.path.join(BASE_DIR.parent, ".env")
     dotenv.read_dotenv(path_env)
 except EnvironmentError:
     print("Couldn't retrieve the environment variables")
 
 try:
-    path_env = os.path.join(BASE_DIR, ".env")
+    path_env = os.path.join(BASE_DIR.parent, ".env")
     dotenv.read_dotenv(path_env)
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 except KeyError:
-    path_env = os.path.join(BASE_DIR, ".env")
+    path_env = os.path.join(BASE_DIR.parent, ".env")
     utils.generate_secret_key(path_env)
     dotenv.read_dotenv(path_env)
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
@@ -54,8 +54,18 @@ try:
     DBPASSWORD = os.environ["DBPASSWORD"]
     DBHOST = os.environ["DBHOST"]
     DBPORT = os.environ["DBPORT"]
+    EMAIL_HOST = os.environ["EMAIL_HOST"]
+    EMAIL_PORT = os.environ["EMAIL_PORT"]
+    EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
+    EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
+    EMAIL_USE_TLS = os.environ["EMAIL_USE_TLS"]
+    DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
+    EMAIL_BACKEND = os.environ["EMAIL_BACKEND"]
+    SOCIAL_AUTH_GITHUB_KEY = os.environ["SOCIAL_AUTH_GITHUB_KEY"]
+    SOCIAL_AUTH_GITHUB_SECRET = os.environ["SOCIAL_AUTH_GITHUB_SECRET"]
+    # SERVER_EMAIL = os.environ["SERVER_EMAIL"]
 except KeyError:
-    path_env = os.path.join(BASE_DIR, ".env")
+    path_env = os.path.join(BASE_DIR.parent, ".env")
     dotenv.read_dotenv(path_env)
     DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
     DJANGO_HOST_NAME = os.environ["DJANGO_HOST_NAME"]
@@ -64,6 +74,21 @@ except KeyError:
     DBPASSWORD = os.environ["DBPASSWORD"]
     DBHOST = os.environ["DBHOST"]
     DBPORT = os.environ["DBPORT"]
+    EMAIL_HOST = os.environ["EMAIL_HOST"]
+    EMAIL_PORT = os.environ["EMAIL_PORT"]
+    EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
+    EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
+    EMAIL_USE_TLS = os.environ["EMAIL_USE_TLS"]
+    DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
+    EMAIL_BACKEND = os.environ["EMAIL_BACKEND"]
+    SOCIAL_AUTH_GITHUB_KEY = os.environ["SOCIAL_AUTH_GITHUB_KEY"]
+    SOCIAL_AUTH_GITHUB_SECRET = os.environ["SOCIAL_AUTH_GITHUB_SECRET"]
+    # SERVER_EMAIL = os.environ["SERVER_EMAIL"]
+
+if EMAIL_USE_TLS == "True":
+    EMAIL_USE_TLS = True
+if EMAIL_USE_TLS == "False":
+    EMAIL_USE_TLS = False
 
 if DJANGO_ENVIRONMENT == "PRODUCTION":
     ALLOWED_HOSTS = [
@@ -86,13 +111,14 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    "django_users",
+    "social_django",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_users",
 ]
 
 MIDDLEWARE = [
@@ -120,6 +146,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -147,18 +175,23 @@ DATABASES = {
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    # },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    # },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    # },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    # },
+]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "social_core.backends.github.GithubOAuth2",
 ]
 
 
@@ -184,3 +217,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
+
+LOGIN_REDIRECT_URL = "dashboard"
+
+LOGOUT_REDIRECT_URL = "dashboard"
