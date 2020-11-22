@@ -531,15 +531,120 @@ DEFAULT_FROM_EMAIL = Username
 
 - Now, email should be sent from mailgun everytime.
 
-## Additional Information
+## Log in With GitHub
 
-### Screenshots
+- Install social auth with `pip install social-auth-app-django`
+- Add it to `INSTALLED_APPS`
 
-### Links
+```python
+INSTALLED_APPS = [
+    "django_users",
+    "social_django",
+    """...""",
+]
+```
+
+- Add two context processors to settings.py
+
+```python
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            "django_apps/templates/",
+        ],  ## Add base templates directory
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                """..."""
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
+            ],
+        },
+    },
+]
+```
+
+- Apply the migrations
+
+```bash
+❯ python.exe .\manage.py makemigrations
+```
+
+```bash
+❯ python.exe .\manage.py migrate
+```
+
+- Include the social authentication URLs in your app
+
+```python
+path("oauth/", include("social_django.urls")),
+```
+
+- To use social authentication specifically with GitHub, you have to add a dedicated authentication backend.
+
+```python
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "social_core.backends.github.GithubOAuth2",
+]
+```
+
+- Add a link to the GitHub login on your login page
+
+```html
+<a href="{% url 'social:begin' 'github' %}">Login with Github</a>
+```
+
+- Go to [GitHub’s page for registering a new OAuth application](https://github.com/settings/applications/new)
+- The most important part is the **Authorization Callback URL**. It has to point back to your application.
+- Add the values of `Client ID` and `Client Secret` to settings as `SOCIAL_AUTH_GITHUB_KEY`  and `SOCIAL_AUTH_GITHUB_SECRET`
+
+```python
+try:
+    """..."""
+    SOCIAL_AUTH_GITHUB_KEY = os.environ["SOCIAL_AUTH_GITHUB_KEY"]
+    SOCIAL_AUTH_GITHUB_SECRET = os.environ["SOCIAL_AUTH_GITHUB_SECRET"]
+except KeyError:
+    """..."""
+    SOCIAL_AUTH_GITHUB_KEY = os.environ["SOCIAL_AUTH_GITHUB_KEY"]
+    SOCIAL_AUTH_GITHUB_SECRET = os.environ["SOCIAL_AUTH_GITHUB_SECRET"]
+```
+
+- Authorize github to login
+- Revoke user tokens to invalidate them
+
+### Select Authentication backend
+
+- Django previously had only one authentication backend to choose from, and now it has two. Django doesn’t know which one to use when creating new users
+- Replace the line user = form.save() in registration view
+
+```python
+from django.shortcuts import redirect, render, Http404
+
+
+def register(request):
+    if request.method == "GET":
+        return render(request, "register.html", {"form": NewUserCreationForm})
+    elif request.method == "POST":
+        form = NewUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.backend = "django.contrib.auth.backends.ModelBackend"
+            user.save()
+            login(request, user)
+            return redirect(reverse("dashboard"))
+        else:
+            return Http404("Invalid Form")
+```
+
+- This will set the backend to use when using the app's registration process
+- Return a `HTTP  404` error if form is invalid
 
 ## Notes template
 
 ```python
+
 ```
 
 ```html
