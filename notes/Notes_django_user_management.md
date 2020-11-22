@@ -24,6 +24,7 @@ Notes and code about project_name
   - [Log in With GitHub](#log-in-with-github)
     - [Select Authentication backend](#select-authentication-backend)
   - [Gmail SMTP](#gmail-smtp)
+  - [Finalise](#finalise)
   - [Notes template](#notes-template)
 
 ## Notes
@@ -538,11 +539,7 @@ DEFAULT_FROM_EMAIL = Username
 - Add it to `INSTALLED_APPS`
 
 ```python
-INSTALLED_APPS = [
-    "django_users",
-    "social_django",
-    """...""",
-]
+INSTALLED_APPS = ["django_users", "social_django", """..."""]
 ```
 
 - Add two context processors to settings.py
@@ -551,18 +548,15 @@ INSTALLED_APPS = [
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            "django_apps/templates/",
-        ],  ## Add base templates directory
+        "DIRS": ["django_apps/templates/"],  ## Add base templates directory
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
-                """..."""
-                "social_django.context_processors.backends",
+                """...""" "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
-            ],
+            ]
         },
-    },
+    }
 ]
 ```
 
@@ -662,6 +656,13 @@ EMAIL_BACKEND = django.core.mail.backends.smtp.EmailBackend
 
 DEFAULT_FROM_EMAIL = your_email@gmail.com
 ```
+
+## Finalise
+
+- Add env vars to `tox.ini` and `.travis.yml`.
+- Enable password validation settings.
+- Close DB and clusters if not in further use.
+- Check and remove any secrets added to repository.
 
 ## Notes template
 
