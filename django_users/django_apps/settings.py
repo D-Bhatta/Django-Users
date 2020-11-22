@@ -61,6 +61,8 @@ try:
     EMAIL_USE_TLS = os.environ["EMAIL_USE_TLS"]
     DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
     EMAIL_BACKEND = os.environ["EMAIL_BACKEND"]
+    SOCIAL_AUTH_GITHUB_KEY = os.environ["SOCIAL_AUTH_GITHUB_KEY"]
+    SOCIAL_AUTH_GITHUB_SECRET = os.environ["SOCIAL_AUTH_GITHUB_SECRET"]
     # SERVER_EMAIL = os.environ["SERVER_EMAIL"]
 except KeyError:
     path_env = os.path.join(BASE_DIR.parent, ".env")
@@ -79,6 +81,8 @@ except KeyError:
     EMAIL_USE_TLS = os.environ["EMAIL_USE_TLS"]
     DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
     EMAIL_BACKEND = os.environ["EMAIL_BACKEND"]
+    SOCIAL_AUTH_GITHUB_KEY = os.environ["SOCIAL_AUTH_GITHUB_KEY"]
+    SOCIAL_AUTH_GITHUB_SECRET = os.environ["SOCIAL_AUTH_GITHUB_SECRET"]
     # SERVER_EMAIL = os.environ["SERVER_EMAIL"]
 
 if EMAIL_USE_TLS == "True":
@@ -108,6 +112,7 @@ else:
 
 INSTALLED_APPS = [
     "django_users",
+    "social_django",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -141,6 +146,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -180,6 +187,11 @@ AUTH_PASSWORD_VALIDATORS = [
     # {
     #     "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     # },
+]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "social_core.backends.github.GithubOAuth2",
 ]
 
 
